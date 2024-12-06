@@ -7,6 +7,7 @@ import { ConfigModule } from 'src/config/config.module';
 import { ConfigService } from '@nestjs/config';
 import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
       }),
       inject: [ConfigService],
     }),
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy],
