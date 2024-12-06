@@ -8,7 +8,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
-import { AuthRequestDto } from './dtos/auth-request.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
+import { SignInDto } from './dtos/sign-in.dto';
 import { AuthResponseDto } from './dtos/auth-response.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -22,7 +23,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async signUp(data: AuthRequestDto): Promise<AuthResponseDto> {
+  async signUp(data: SignUpDto): Promise<AuthResponseDto> {
     const exists = await this.userService.findByUsername(data.username);
 
     if (exists) {
@@ -55,7 +56,7 @@ export class AuthService {
     }
   }
 
-  async signIn(data: AuthRequestDto): Promise<AuthResponseDto> {
+  async signIn(data: SignInDto): Promise<AuthResponseDto> {
     const user = await this.userService.findByUsername(data.username);
 
     if (!user || !(await bcrypt.compare(data.password, user.password))) {
