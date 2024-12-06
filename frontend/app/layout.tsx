@@ -9,23 +9,26 @@ const roboto = Roboto({
 });
 
 import "./globals.css";
+import ReduxProvider from "@/components/providers/redux-provider";
 
 export const metadata: Metadata = {
   title: "Event Management",
   description: "Event Management App by github.com/andymyp",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface Props {
   children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: Readonly<Props>) {
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={`${roboto.variable} antialiased`}>{children}</body>
+      <body className={`${roboto.variable} antialiased`}>
+        <ReduxProvider>{children}</ReduxProvider>
+      </body>
     </html>
   );
 }
