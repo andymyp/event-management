@@ -9,6 +9,7 @@ const roboto = Roboto({
 
 import "./globals.css";
 import ReduxProvider from "@/components/providers/redux-provider";
+import LoadingBar from "@/components/customs/loading-bar";
 import { Toaster } from "@/components/ui/toaster";
 
 export async function generateMetadata() {
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: Readonly<Props>) {
       </head>
       <body className={`${roboto.variable} antialiased`}>
         <ReduxProvider>
+          <LoadingBar />
           {children}
           <Toaster />
         </ReduxProvider>
