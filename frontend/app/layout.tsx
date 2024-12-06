@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
@@ -11,10 +10,12 @@ const roboto = Roboto({
 import "./globals.css";
 import ReduxProvider from "@/components/providers/redux-provider";
 
-export const metadata: Metadata = {
-  title: "Event Management",
-  description: "Event Management App by github.com/andymyp",
-};
+export async function generateMetadata() {
+  return {
+    title: "Event Management",
+    description: "Event Management App by github.com/andymyp",
+  };
+}
 
 interface Props {
   children: React.ReactNode;
