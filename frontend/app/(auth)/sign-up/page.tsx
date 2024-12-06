@@ -12,23 +12,39 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import useHeader from "@/hooks/use-header";
 
-const schema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
-});
+const schema = z
+  .object({
+    username: z.string().min(1, "Username is required"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    cpassword: z.string(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.password !== val.cpassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Passwords not match",
+        path: ["cpassword"],
+      });
+    }
+  });
 
 type FormValues = z.infer<typeof schema>;
 
-export default function SignInPage() {
-  useHeader({ title: "Sign In" });
+export default function SignUpPage() {
+  useHeader({ title: "Sign Up" });
 
   const { toast } = useToast();
   const dispatch = useDispatch<AppDispatch>();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showCPassword, setShowCPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const toggleCPasswordVisibility = () => {
+    setShowCPassword(!showCPassword);
   };
 
   const { register, handleSubmit, formState } = useForm<FormValues>({
@@ -53,11 +69,11 @@ export default function SignInPage() {
     >
       <div className="flex flex-col gap-4 mx-auto h-full w-full items-center justify-center lg:w-2/3">
         <h1 className="mb-2 text-center text-3xl text-black lg:mb-4">
-          Sign In
+          Sign Up
         </h1>
         <Input
           {...register("username")}
-          placeholder="Enter your username"
+          placeholder="Enter username"
           type="text"
           className="w-full"
           name="username"
@@ -66,7 +82,7 @@ export default function SignInPage() {
         <div className="relative w-full">
           <Input
             {...register("password")}
-            placeholder="Enter your password"
+            placeholder="Enter password"
             className="w-full pr-10"
             name="password"
             type={showPassword ? "text" : "password"}
@@ -75,6 +91,26 @@ export default function SignInPage() {
             type="button"
             className="absolute inset-y-0 right-2 flex items-center"
             onClick={togglePasswordVisibility}
+          >
+            {showPassword ? (
+              <EyeOffIcon className="h-5 w-5 text-gray-500" />
+            ) : (
+              <EyeIcon className="h-5 w-5 text-gray-500" />
+            )}
+          </button>
+        </div>
+        <div className="relative w-full">
+          <Input
+            {...register("cpassword")}
+            placeholder="Enter confirm password"
+            className="w-full pr-10"
+            name="cpassword"
+            type={showCPassword ? "text" : "password"}
+          />
+          <button
+            type="button"
+            className="absolute inset-y-0 right-2 flex items-center"
+            onClick={toggleCPasswordVisibility}
           >
             {showPassword ? (
               <EyeOffIcon className="h-5 w-5 text-gray-500" />
@@ -92,7 +128,7 @@ export default function SignInPage() {
           {formState.isSubmitting && (
             <RefreshCcw className="mr-2 h-4 w-4 animate-spin" />
           )}
-          Sign In
+          Sign Up
         </Button>
       </div>
     </form>
