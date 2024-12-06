@@ -9,6 +9,7 @@ const roboto = Roboto({
 
 import "./globals.css";
 import ReduxProvider from "@/components/providers/redux-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export async function generateMetadata() {
   return {
@@ -28,7 +29,10 @@ export default function RootLayout({ children }: Readonly<Props>) {
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={`${roboto.variable} antialiased`}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          {children}
+          <Toaster />
+        </ReduxProvider>
       </body>
     </html>
   );
