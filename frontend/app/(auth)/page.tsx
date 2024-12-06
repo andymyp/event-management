@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import useHeader from "@/hooks/use-header";
+import { SignInAction } from "@/lib/actions/auth-action";
 
 const schema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -36,7 +37,7 @@ export default function SignInPage() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data);
+    await dispatch(SignInAction(data));
   };
 
   const onError: SubmitErrorHandler<FormValues> = (errors) => {
