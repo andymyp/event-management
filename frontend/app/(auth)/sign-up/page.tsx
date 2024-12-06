@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import useHeader from "@/hooks/use-header";
+import { SignUpAction } from "@/lib/actions/auth-action";
 
 const schema = z
   .object({
@@ -52,7 +53,7 @@ export default function SignUpPage() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data);
+    await dispatch(SignUpAction(data));
   };
 
   const onError: SubmitErrorHandler<FormValues> = (errors) => {
