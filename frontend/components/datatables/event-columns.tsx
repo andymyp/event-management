@@ -2,7 +2,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { TEvent } from "@/types/event-type";
-import { ArrowDown, ArrowUp, ArrowUpDown, MoreVertical } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Edit2,
+  Eye,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import Link from "next/link";
 
 export const EventColumns: ColumnDef<TEvent>[] = [
   {
@@ -88,14 +97,23 @@ export const EventColumns: ColumnDef<TEvent>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(event.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <Link href={`/dashboard/${event.id}`}>
+              <DropdownMenuItem className="flex justify-between">
+                View
+                <Eye />
+              </DropdownMenuItem>
+            </Link>
+            <Link href={`/dashboard/my-events/${event.id}`}>
+              <DropdownMenuItem className="flex justify-between">
+                Edit
+                <Edit2 />
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem className="flex justify-between">
+              Delete
+              <Trash />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

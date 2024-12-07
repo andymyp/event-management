@@ -1,6 +1,12 @@
 import axios from "@/lib/axios";
 import { format } from "date-fns";
-import { TEvent, TEventInput, TEventParams, TEvents } from "@/types/event-type";
+import {
+  TEvent,
+  TEventInput,
+  TEventParams,
+  TEvents,
+  TEventUpdate,
+} from "@/types/event-type";
 
 export const createEvent = async (data: TEventInput): Promise<TEvent> => {
   const response = await axios.post("/event", data);
@@ -31,5 +37,15 @@ export const fetchMyEvents = async (params: TEventParams): Promise<TEvents> => {
     },
   });
 
+  return response.data;
+};
+
+export const fetchEvent = async (id: string): Promise<TEvent> => {
+  const response = await axios.get(`/event/${id}`);
+  return response.data;
+};
+
+export const updateEvent = async (data: TEventUpdate): Promise<TEvent> => {
+  const response = await axios.patch(`/event/${data.id}`, data);
   return response.data;
 };

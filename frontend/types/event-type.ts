@@ -29,3 +29,10 @@ export type TEvents = {
   total: number;
   events: TEvent[];
 };
+
+export type TEventUpdate = {
+  id: string;
+  title: string;
+  description: string;
+  date: Date;
+};
