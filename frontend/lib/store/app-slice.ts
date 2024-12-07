@@ -23,6 +23,9 @@ const appSlice = createSlice({
     setHeader: (state, action: PayloadAction<THeader>) => {
       state.header = action.payload;
     },
+    resetState: (state) => {
+      state.header = initialState.header;
+    },
   },
 });
 

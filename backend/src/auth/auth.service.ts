@@ -51,7 +51,7 @@ export class AuthService {
         ...tokens,
       };
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
@@ -79,7 +79,7 @@ export class AuthService {
         ...tokens,
       };
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }

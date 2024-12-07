@@ -3,7 +3,7 @@ import { AppAction } from "../store/app-slice";
 import { AuthAction } from "../store/auth-slice";
 import { toast } from "@/hooks/use-toast";
 import { TAuth } from "@/types/auth-type";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { signInService, signUpService } from "@/services/auth-service";
 
 export const SignUpAction = (form: TAuth) => {
@@ -56,6 +56,26 @@ export const SignInAction = (form: TAuth) => {
         user: JSON.stringify(data.user),
         redirectTo: "/dashboard",
       });
+    } catch (error: any) {
+      if (error.response) {
+        toast({ variant: "error", description: error.response.data.message });
+      } else {
+        toast({ variant: "error", description: error.message });
+      }
+    } finally {
+      dispatch(AppAction.setLoading(false));
+    }
+  };
+};
+
+export const SignOutAction = () => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      dispatch(AppAction.setLoading(true));
+      dispatch(AppAction.resetState());
+      dispatch(AuthAction.signOut());
+
+      await signOut({ redirectTo: "/" });
     } catch (error: any) {
       if (error.response) {
         toast({ variant: "error", description: error.response.data.message });
