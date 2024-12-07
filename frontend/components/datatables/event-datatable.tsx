@@ -39,6 +39,10 @@ interface DataTableProps<TData, TValue> {
     pagination: PaginationState;
     setPagination: Dispatch<SetStateAction<PaginationState>>;
   };
+  sortState: {
+    sorting: SortingState;
+    setSorting: Dispatch<SetStateAction<SortingState>>;
+  };
 }
 
 export function EventDataTable<TData, TValue>({
@@ -46,8 +50,8 @@ export function EventDataTable<TData, TValue>({
   data,
   isFetching,
   pageState,
+  sortState,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
@@ -56,20 +60,22 @@ export function EventDataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+
     rowCount: pageState.total,
     manualPagination: true,
     onPaginationChange: pageState.setPagination,
 
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onSortingChange: sortState.setSorting,
+
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
       pagination: pageState.pagination,
+      sorting: sortState.sorting,
 
-      sorting,
       columnFilters,
       columnVisibility,
       rowSelection,

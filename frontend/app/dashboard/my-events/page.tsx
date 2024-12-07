@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { AppAction } from "@/lib/store/app-slice";
-import { PaginationState } from "@tanstack/react-table";
+import { PaginationState, SortingState } from "@tanstack/react-table";
 
 export default function MyEventsPage() {
   useHeader({
@@ -23,7 +23,16 @@ export default function MyEventsPage() {
     pageSize: 10,
   });
 
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "createdAt",
+      desc: true,
+    },
+  ]);
+
   const { data, isFetching } = useMyEvents({
+    sort: sorting[0]?.id,
+    order: sorting[0]?.desc ? "desc" : "asc",
     page: pagination.pageIndex,
     limit: pagination.pageSize,
   });
@@ -42,6 +51,10 @@ export default function MyEventsPage() {
           total: data ? data.total : 0,
           pagination,
           setPagination,
+        }}
+        sortState={{
+          sorting,
+          setSorting,
         }}
       />
     </div>
