@@ -153,10 +153,10 @@ export class EventService {
     }
 
     if (filter?.from) {
-      let dateFilter: any = { gte: filter.from };
+      let dateFilter: any = { gte: new Date(filter.from) };
 
       if (filter?.to) {
-        dateFilter = { ...dateFilter, lte: filter.to };
+        dateFilter = { ...dateFilter, lte: new Date(filter.to) };
       }
 
       where.createdAt = dateFilter;
