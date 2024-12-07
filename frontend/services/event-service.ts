@@ -49,3 +49,8 @@ export const updateEvent = async (data: TEventUpdate): Promise<TEvent> => {
   const response = await axios.patch(`/event/${data.id}`, data);
   return response.data;
 };
+
+export const deleteEvent = async (id: string): Promise<TEvent> => {
+  const response = await axios.delete(`/event/${id}`);
+  return response.data;
+};

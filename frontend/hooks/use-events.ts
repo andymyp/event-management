@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import {
   createEvent,
+  deleteEvent,
   fetchEvent,
   fetchMyEvents,
   updateEvent,
@@ -52,6 +53,21 @@ export const useUpdateEvent = () => {
       queryClient.invalidateQueries({ queryKey: ["myEvents"] });
       queryClient.invalidateQueries({ queryKey: ["event"] });
       toast({ variant: "success", description: "Event updated" });
+    },
+    onError: (error: any) => {
+      toast({ variant: "error", description: error.message });
+    },
+  });
+};
+
+export const useDeleteEvent = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myEvents"] });
+      toast({ variant: "success", description: "Event deleted" });
     },
     onError: (error: any) => {
       toast({ variant: "error", description: error.message });

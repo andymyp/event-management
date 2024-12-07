@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import Link from "next/link";
+import { useState } from "react";
+import { DeleteDialog } from "../customs/delete-dialog";
 
 export const EventColumns: ColumnDef<TEvent>[] = [
   {
@@ -87,35 +89,48 @@ export const EventColumns: ColumnDef<TEvent>[] = [
     id: "actions",
     cell: ({ row }) => {
       const event = row.original;
+      const [openDelete, setOpenDelete] = useState<boolean>(false);
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <Link href={`/dashboard/${event.id}`}>
-              <DropdownMenuItem className="flex justify-between">
-                View
-                <Eye />
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <Link href={`/dashboard/${event.id}`}>
+                <DropdownMenuItem className="flex justify-between">
+                  View
+                  <Eye />
+                </DropdownMenuItem>
+              </Link>
+              <Link href={`/dashboard/my-events/${event.id}`}>
+                <DropdownMenuItem className="flex justify-between">
+                  Edit
+                  <Edit2 />
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem
+                onClick={() => setOpenDelete(true)}
+                className="flex justify-between"
+              >
+                Delete
+                <Trash />
               </DropdownMenuItem>
-            </Link>
-            <Link href={`/dashboard/my-events/${event.id}`}>
-              <DropdownMenuItem className="flex justify-between">
-                Edit
-                <Edit2 />
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem className="flex justify-between">
-              Delete
-              <Trash />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {openDelete && (
+            <DeleteDialog
+              open={openDelete}
+              setOpen={setOpenDelete}
+              eventId={event.id}
+            />
+          )}
+        </>
       );
     },
     enableSorting: false,
