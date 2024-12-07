@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Fragment } from "react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { AppState } from "@/lib/store";
 
 export default function Header() {
   const pathname = usePathname();
@@ -21,6 +23,8 @@ export default function Header() {
     label: segment.charAt(0).toUpperCase() + segment.slice(1),
     href: `/${pathSegments.slice(0, index + 1).join("/")}`,
   }));
+
+  const { title } = useSelector((state: AppState) => state.app.header);
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2">
@@ -33,7 +37,9 @@ export default function Header() {
               {breadcrumbs.map((item, i) =>
                 i === breadcrumbs.length - 1 ? (
                   <BreadcrumbItem key={i}>
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    <BreadcrumbPage>
+                      {title ? title : item.label}
+                    </BreadcrumbPage>
                   </BreadcrumbItem>
                 ) : (
                   <Fragment key={i}>
