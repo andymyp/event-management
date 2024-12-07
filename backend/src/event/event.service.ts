@@ -36,7 +36,7 @@ export class EventService {
 
       const { sort = 'createdAt', order = 'desc' } = filter;
 
-      const skip = (Number(filter.page) - 1) * Number(filter.limit);
+      const skip = Number(filter.page) * Number(filter.limit);
 
       const [total, events] = await Promise.all([
         this.prisma.event.count({ where }),
@@ -66,7 +66,7 @@ export class EventService {
 
       const { sort = 'createdAt', order = 'desc' } = filter;
 
-      const skip = (Number(filter.page) - 1) * Number(filter.limit);
+      const skip = Number(filter.page) * Number(filter.limit);
 
       const [total, events] = await Promise.all([
         this.prisma.event.count({ where }),

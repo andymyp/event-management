@@ -1,3 +1,5 @@
+import { PaginationState } from "@tanstack/react-table";
+
 export type THeader = {
   title: string | undefined;
   actions?: TAction[];

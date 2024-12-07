@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { TEvent } from "@/types/event-type";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,38 +12,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
+import { format } from "date-fns";
 
 export const EventColumns: ColumnDef<TEvent>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+    id: "number",
+    header: "#",
+    cell: (info) => info.row.index + 1,
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: "title",
     header: "Title",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
   },
   {
     accessorKey: "date",
@@ -57,6 +38,10 @@ export const EventColumns: ColumnDef<TEvent>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+    cell: ({ getValue }) => {
+      const date = new Date(getValue() as string);
+      return format(date, "dd/MM/yyyy, HH:mm aa");
     },
   },
   {
@@ -72,6 +57,10 @@ export const EventColumns: ColumnDef<TEvent>[] = [
         </Button>
       );
     },
+    cell: ({ getValue }) => {
+      const date = new Date(getValue() as string);
+      return format(date, "dd/MM/yyyy, HH:mm aa");
+    },
   },
   {
     id: "actions",
@@ -82,7 +71,7 @@ export const EventColumns: ColumnDef<TEvent>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -99,5 +88,7 @@ export const EventColumns: ColumnDef<TEvent>[] = [
         </DropdownMenu>
       );
     },
+    enableSorting: false,
+    enableHiding: false,
   },
 ];
