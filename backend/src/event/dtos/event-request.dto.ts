@@ -9,7 +9,7 @@ export class EventRequestDto {
   @IsNotEmpty()
   description: string;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
   date: Date;
 }

@@ -19,7 +19,7 @@ export class UserService {
       const user = await this.prisma.user.create({ data });
       return user;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
@@ -41,7 +41,7 @@ export class UserService {
 
       return updated;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }

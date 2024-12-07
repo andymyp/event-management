@@ -14,17 +14,25 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { AppState } from "@/lib/store";
+import { Button } from "../ui/button";
+import { Plus } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter(Boolean);
 
+  const formatLabel = (segment: string) =>
+    segment
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
   const breadcrumbs = pathSegments.map((segment, index) => ({
-    label: segment.charAt(0).toUpperCase() + segment.slice(1),
+    label: formatLabel(segment),
     href: `/${pathSegments.slice(0, index + 1).join("/")}`,
   }));
 
-  const { title } = useSelector((state: AppState) => state.app.header);
+  const { title, actions } = useSelector((state: AppState) => state.app.header);
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2">
@@ -53,7 +61,30 @@ export default function Header() {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        {/* <DateRangePicker /> */}
+        {actions?.map((action, i) => {
+          if (action.do === "CREATE") {
+            return (
+              <Link key={i} href={action.link}>
+                <Button type="button">
+                  <Plus />
+                  Create Event
+                </Button>
+              </Link>
+            );
+          }
+
+          if (action.do === "BACK") {
+            return (
+              <Link key={i} href={action.link}>
+                <Button type="button" variant="outline">
+                  Back
+                </Button>
+              </Link>
+            );
+          }
+
+          return null;
+        })}
       </div>
     </header>
   );

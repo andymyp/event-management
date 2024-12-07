@@ -28,24 +28,28 @@ export class EventController {
   }
 
   @Get()
+  @UseGuards(JwtAccessGuard)
   async findAll(@Query() filter: EventFilterDto) {
     const response = await this.eventService.findAll(filter);
     return response;
   }
 
-  @Get(':username/events')
+  @Get('my-events')
+  @UseGuards(JwtAccessGuard)
   async findMyAll(@Req() req: Request, @Query() filter: EventFilterDto) {
     const response = await this.eventService.findMyAll(req.user['id'], filter);
     return response;
   }
 
   @Get(':id')
+  @UseGuards(JwtAccessGuard)
   async findOne(@Param('id') id: string) {
     const response = await this.eventService.findOne(id);
     return response;
   }
 
   @Patch(':id')
+  @UseGuards(JwtAccessGuard)
   async update(
     @Req() req: Request,
     @Param('id') id: string,
@@ -60,6 +64,7 @@ export class EventController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAccessGuard)
   async remove(@Req() req: Request, @Param('id') id: string) {
     const response = await this.eventService.remove(req.user['id'], id);
     return response;

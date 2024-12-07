@@ -9,6 +9,7 @@ import { EventRequestDto } from './dtos/event-request.dto';
 import { EventUpdateDto } from './dtos/event-update.dto';
 import { EventFilterDto } from './dtos/event-filter.dto';
 import { Event } from '@prisma/client';
+import { EventsDto } from './dtos/events.dto';
 
 @Injectable()
 export class EventService {
@@ -24,50 +25,76 @@ export class EventService {
 
       return event;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
 
-  async findAll(filter: EventFilterDto): Promise<Event[]> {
+  async findAll(filter: EventFilterDto): Promise<EventsDto> {
     try {
       const where = this.whereFilter(filter);
 
-      const events = await this.prisma.event.findMany({
-        where,
-        include: { user: true },
-      });
+      const { sort = 'createdAt', order = 'desc' } = filter;
 
-      return events;
+      const skip = (Number(filter.page) - 1) * Number(filter.limit);
+
+      const [total, events] = await Promise.all([
+        this.prisma.event.count({ where }),
+        this.prisma.event.findMany({
+          where,
+          orderBy: { [sort]: order },
+          skip: skip,
+          take: Number(filter.limit),
+          include: { user: { select: { id: true, username: true } } },
+        }),
+      ]);
+
+      return { total, events };
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
 
-  async findMyAll(createdBy: string, filter: EventFilterDto): Promise<Event[]> {
+  async findMyAll(
+    createdBy: string,
+    filter: EventFilterDto,
+  ): Promise<EventsDto> {
     try {
       const where = this.whereFilter(filter);
-      where.AND.push({ createdBy });
+      where.createdBy = createdBy;
 
-      const events = await this.prisma.event.findMany({
-        where,
-        include: { user: true },
-      });
+      const { sort = 'createdAt', order = 'desc' } = filter;
 
-      return events;
+      const skip = (Number(filter.page) - 1) * Number(filter.limit);
+
+      const [total, events] = await Promise.all([
+        this.prisma.event.count({ where }),
+        this.prisma.event.findMany({
+          where,
+          orderBy: { [sort]: order },
+          skip: skip,
+          take: Number(filter.limit),
+        }),
+      ]);
+
+      return { total, events };
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
 
   async findOne(id: string): Promise<Event> {
     try {
-      const event = await this.prisma.event.findUnique({ where: { id } });
+      const event = await this.prisma.event.findUnique({
+        where: { id },
+        include: { user: { select: { id: true, username: true } } },
+      });
+
       return event;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
@@ -89,7 +116,7 @@ export class EventService {
 
       return updated;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
@@ -110,20 +137,19 @@ export class EventService {
 
       return deleted;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error);
     }
   }
 
   private whereFilter(filter: EventFilterDto) {
-    const where = {
-      AND: [],
-    };
+    const where: any = {};
 
     if (filter?.search) {
-      where.AND.push({
-        title: { contains: filter.search, mode: 'insensitive' },
-      });
+      where.OR = [
+        { title: { contains: filter.search, mode: 'insensitive' } },
+        { description: { contains: filter.search, mode: 'insensitive' } },
+      ];
     }
 
     if (filter?.from) {
@@ -133,9 +159,7 @@ export class EventService {
         dateFilter = { ...dateFilter, lte: filter.to };
       }
 
-      where.AND.push({
-        createdAt: dateFilter,
-      });
+      where.createdAt = dateFilter;
     }
 
     return where;

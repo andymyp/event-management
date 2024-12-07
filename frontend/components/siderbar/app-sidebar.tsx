@@ -19,6 +19,19 @@ import { SignOutAction } from "@/lib/actions/auth-action";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
+const navMainMenu = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "My Events",
+    url: `/dashboard/my-events`,
+    icon: Album,
+  },
+];
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: AppState) => state.auth.user) as TUser;
@@ -33,19 +46,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setTheme("light");
     }
   }, [isDarkMode]);
-
-  const navMainMenu = [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "My Events",
-      url: `/dashboard/${user.username}/events`,
-      icon: Album,
-    },
-  ];
 
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
