@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect, RedirectType } from "next/navigation";
 import ThemeProvider from "@/components/providers/theme-provider";
+import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/siderbar/app-sidebar";
 import Header from "@/components/customs/header";
@@ -23,13 +24,15 @@ export default async function DashboardLayout({ children }: Props) {
       enableSystem
       disableTransitionOnChange
     >
-      <SidebarProvider defaultOpen={false}>
-        <AppSidebar />
-        <SidebarInset>
-          <Header />
-          {children}
-        </SidebarInset>
-      </SidebarProvider>
+      <ReactQueryProvider>
+        <SidebarProvider defaultOpen={false}>
+          <AppSidebar />
+          <SidebarInset>
+            <Header />
+            {children}
+          </SidebarInset>
+        </SidebarProvider>
+      </ReactQueryProvider>
     </ThemeProvider>
   );
 }
