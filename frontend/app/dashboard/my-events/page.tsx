@@ -29,7 +29,7 @@ export default function MyEventsPage() {
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 5,
   });
 
   const [sorting, setSorting] = useState<SortingState>([

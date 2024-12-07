@@ -88,9 +88,9 @@ export function EventDataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex flex-row items-center gap-3 py-4">
+      <div className="flex flex-row items-center gap-3 py-4 pt-0">
         <Input
-          placeholder="Search title"
+          placeholder="Search"
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)

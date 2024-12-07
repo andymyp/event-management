@@ -1,5 +1,6 @@
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -8,6 +9,7 @@ import {
   createEvent,
   deleteEvent,
   fetchEvent,
+  fetchEvents,
   fetchMyEvents,
   updateEvent,
 } from "@/services/event-service";
@@ -71,6 +73,20 @@ export const useDeleteEvent = () => {
     },
     onError: (error: any) => {
       toast({ variant: "error", description: error.message });
+    },
+  });
+};
+
+export const useEvents = (params: TEventParams) => {
+  return useInfiniteQuery({
+    queryKey: ["events", params],
+    queryFn: fetchEvents,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      const currentTotal = pages.flatMap((page) => page.events).length;
+      return currentTotal < lastPage.total
+        ? pages.length * params.limit
+        : undefined;
     },
   });
 };
