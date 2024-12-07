@@ -1,7 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { Album, LayoutDashboard, LogOut, User2 } from "lucide-react";
+import { Album, LayoutDashboard, LogOut, Moon, Sun, User2 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,10 +16,23 @@ import { AppDispatch, AppState } from "@/lib/store";
 import { TUser } from "@/types/auth-type";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { SignOutAction } from "@/lib/actions/auth-action";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: AppState) => state.auth.user) as TUser;
+
+  const { theme, setTheme } = useTheme();
+  const [isDarkMode, setIsDarkMode] = useState(theme === "dark");
+
+  useEffect(() => {
+    if (isDarkMode) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  }, [isDarkMode]);
 
   const navMainMenu = [
     {
@@ -41,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Sign Out"
+              tooltip={user.username}
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
@@ -64,6 +76,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip={isDarkMode ? "Dark Mode" : "Light Mode"}
+              onClick={() => setIsDarkMode(!isDarkMode)}
+            >
+              <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span>{isDarkMode ? "Dark Mode" : "Light Mode"}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Sign Out"

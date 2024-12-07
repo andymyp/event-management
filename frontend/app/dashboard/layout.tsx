@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect, RedirectType } from "next/navigation";
+import ThemeProvider from "@/components/providers/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/siderbar/app-sidebar";
 import Header from "@/components/customs/header";
@@ -16,12 +17,19 @@ export default async function DashboardLayout({ children }: Props) {
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <Header />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <SidebarProvider defaultOpen={false}>
+        <AppSidebar />
+        <SidebarInset>
+          <Header />
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }
