@@ -14,6 +14,7 @@ export function ViewToggle({ isListView, setIsListView }: Props) {
       variant="outline"
       pressed={isListView}
       onPressedChange={() => setIsListView(!isListView)}
+      className="hidden sm:flex"
     >
       <List
         className={`h-[1.2rem] w-[1.2rem] opacity-0 scale-0 transition-all ${
