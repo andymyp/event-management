@@ -8,7 +8,12 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { AppAction } from "@/lib/store/app-slice";
-import { PaginationState } from "@tanstack/react-table";
+import {
+  ColumnFiltersState,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table";
+import { DateRange } from "react-day-picker";
 
 export default function MyEventsPage() {
   useHeader({
@@ -18,12 +23,28 @@ export default function MyEventsPage() {
 
   const dispatch = useDispatch<AppDispatch>();
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const [date, setDate] = useState<DateRange | undefined>();
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 5,
   });
 
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "createdAt",
+      desc: true,
+    },
+  ]);
+
   const { data, isFetching } = useMyEvents({
+    search: columnFilters[0]?.value as string,
+    from: date?.from,
+    to: date?.to,
+    sort: sorting[0]?.id,
+    order: sorting[0]?.desc ? "desc" : "asc",
     page: pagination.pageIndex,
     limit: pagination.pageSize,
   });
@@ -38,6 +59,18 @@ export default function MyEventsPage() {
         isFetching={isFetching}
         columns={EventColumns}
         data={data ? data.events : []}
+        filterState={{
+          columnFilters,
+          setColumnFilters,
+        }}
+        dateState={{
+          date,
+          setDate,
+        }}
+        sortState={{
+          sorting,
+          setSorting,
+        }}
         pageState={{
           total: data ? data.total : 0,
           pagination,

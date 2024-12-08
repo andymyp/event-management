@@ -29,11 +29,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DateRangePicker } from "../customs/date-range-picker";
+import { DateRange, SelectRangeEventHandler } from "react-day-picker";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isFetching: boolean;
+  filterState: {
+    columnFilters: ColumnFiltersState;
+    setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
+  };
+  dateState: {
+    date: DateRange | undefined;
+    setDate: SelectRangeEventHandler;
+  };
+  sortState: {
+    sorting: SortingState;
+    setSorting: Dispatch<SetStateAction<SortingState>>;
+  };
   pageState: {
     total: number;
     pagination: PaginationState;
@@ -45,48 +59,44 @@ export function EventDataTable<TData, TValue>({
   columns,
   data,
   isFetching,
+  filterState,
+  dateState,
+  sortState,
   pageState,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: filterState.setColumnFilters,
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: sortState.setSorting,
     rowCount: pageState.total,
     manualPagination: true,
     onPaginationChange: pageState.setPagination,
-
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
     state: {
+      sorting: sortState.sorting,
+      columnFilters: filterState.columnFilters,
       pagination: pageState.pagination,
-
-      sorting,
-      columnFilters,
       columnVisibility,
-      rowSelection,
     },
   });
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex flex-row items-center gap-3 py-4 pt-0">
         <Input
-          placeholder="Filter title"
+          placeholder="Search"
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
         />
+        <DateRangePicker {...dateState} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

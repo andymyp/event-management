@@ -9,8 +9,6 @@ const useHeader = ({ title, actions }: THeader) => {
 
   useEffect(() => {
     if (title) {
-      document.title = `Event Management - ${title}`;
-
       let header: THeader = { title };
 
       if (actions) {
@@ -18,6 +16,7 @@ const useHeader = ({ title, actions }: THeader) => {
       }
 
       dispatch(AppAction.setHeader(header));
+      document.title = `EMP - ${title}`;
     }
   }, [title, actions]);
 };

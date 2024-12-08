@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class EventFilterDto {
   @IsOptional()
@@ -6,11 +6,9 @@ export class EventFilterDto {
   search?: string;
 
   @IsOptional()
-  @IsDate()
   from?: Date;
 
   @IsOptional()
-  @IsDate()
   to?: Date;
 
   @IsOptional()

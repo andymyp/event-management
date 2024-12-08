@@ -36,14 +36,12 @@ export class EventService {
 
       const { sort = 'createdAt', order = 'desc' } = filter;
 
-      const skip = Number(filter.page) * Number(filter.limit);
-
       const [total, events] = await Promise.all([
         this.prisma.event.count({ where }),
         this.prisma.event.findMany({
           where,
           orderBy: { [sort]: order },
-          skip: skip,
+          skip: Number(filter.page),
           take: Number(filter.limit),
           include: { user: { select: { id: true, username: true } } },
         }),
@@ -153,10 +151,10 @@ export class EventService {
     }
 
     if (filter?.from) {
-      let dateFilter: any = { gte: filter.from };
+      let dateFilter: any = { gte: new Date(filter.from) };
 
       if (filter?.to) {
-        dateFilter = { ...dateFilter, lte: filter.to };
+        dateFilter = { ...dateFilter, lte: new Date(filter.to) };
       }
 
       where.createdAt = dateFilter;

@@ -14,8 +14,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 export async function generateMetadata() {
   return {
-    title: "Event Management",
-    description: "Event Management App by github.com/andymyp",
+    title: "EMP",
+    description: "Event Management Platform by github.com/andymyp",
   };
 }
 

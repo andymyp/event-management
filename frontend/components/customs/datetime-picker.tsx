@@ -21,7 +21,9 @@ interface Props {
 }
 
 export function DatetimePicker({ id, label, date, setDate }: Props) {
-  const [timeValue, setTimeValue] = useState<string>("00:00");
+  const [timeValue, setTimeValue] = useState<string>(
+    date ? format(date!, "HH:mm") : "00:00"
+  );
 
   const handleTimeChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const time = e.target.value;
@@ -72,7 +74,7 @@ export function DatetimePicker({ id, label, date, setDate }: Props) {
         >
           <CalendarIcon />
           {date ? (
-            format(date, "dd/MM/yyyy, HH:mm aa")
+            format(date!, "dd/MM/yyyy, HH:mm aa")
           ) : (
             <span>{label ? label : "Pick date time"}</span>
           )}

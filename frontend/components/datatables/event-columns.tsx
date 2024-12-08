@@ -2,7 +2,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { TEvent } from "@/types/event-type";
-import { ArrowUpDown, MoreVertical } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Edit2,
+  Eye,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +21,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
+import { DeleteDialog } from "../customs/delete-dialog";
 
 export const EventColumns: ColumnDef<TEvent>[] = [
   {
@@ -32,10 +43,16 @@ export const EventColumns: ColumnDef<TEvent>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Event Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          )}
         </Button>
       );
     },
@@ -50,10 +67,16 @@ export const EventColumns: ColumnDef<TEvent>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Created At
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          {column.getIsSorted() === "asc" ? (
+            <ArrowUp className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "desc" ? (
+            <ArrowDown className="ml-2 h-4 w-4" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          )}
         </Button>
       );
     },
@@ -66,26 +89,48 @@ export const EventColumns: ColumnDef<TEvent>[] = [
     id: "actions",
     cell: ({ row }) => {
       const event = row.original;
+      const [openDelete, setOpenDelete] = useState<boolean>(false);
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(event.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <Link href={`/dashboard/${event.id}`}>
+                <DropdownMenuItem className="flex justify-between">
+                  View
+                  <Eye />
+                </DropdownMenuItem>
+              </Link>
+              <Link href={`/dashboard/my-events/${event.id}`}>
+                <DropdownMenuItem className="flex justify-between">
+                  Edit
+                  <Edit2 />
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem
+                onClick={() => setOpenDelete(true)}
+                className="flex justify-between"
+              >
+                Delete
+                <Trash />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {openDelete && (
+            <DeleteDialog
+              open={openDelete}
+              setOpen={setOpenDelete}
+              eventId={event.id}
+            />
+          )}
+        </>
       );
     },
     enableSorting: false,
